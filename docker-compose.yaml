@@ -1,0 +1,14 @@
+version: "3.4"
+services:
+
+  linkshelf:
+    image: linkshelf:latest
+    build:
+      context: .
+      target: dev
+    container_name: linkshelf
+    volumes:
+      - .:/opt/app
+    ports:
+      - "8080:8080"
+    command: pip list
