@@ -1,8 +1,9 @@
-from django.contrib import admin
 from django.urls import path
 
-from linkshelf.apps.bookmarks.views import test
+from linkshelf.apps.bookmarks import views
 
 urlpatterns = [
-    path('', test, name='test'),
+    path('test', views.ListBookmarksView.as_view()),
+
+    path('bookmarks', views.ListBookmarks.as_view(), name='bookmarks-list'),
 ]

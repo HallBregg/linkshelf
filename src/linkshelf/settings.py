@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import logging
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'rest_framework',
     'linkshelf.apps.bookmarks',
 ]
 
@@ -123,3 +123,58 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '[%(asctime)s] %(levelname)s|%(name)s|%(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+        'default': {
+            'format': '%(asctime)s | %(levelname)s | %(name)s | %(filename)s | %(funcName)s | %(message)s'  # noqa
+        },
+        'full': {
+            'format': '%(asctime)s | [%(processName)s] | [%(threadName)s] | %(levelname)s | %(name)s | %(filename)s | %(funcName)s | %(message)s'  # noqa
+        }
+    },
+    'handlers': {
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/tmp/fnet.log',
+            'maxBytes': 1024*1024*15,  # 15MB
+            'backupCount': 10,
+            'formatter': 'default',
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
+        },
+    },
+    'loggers': {
+        # Global handler. Useful for development.
+        # '': {
+        #     'handlers': ['console', 'file'],
+        #     'level': 'DEBUG' if DEBUG else 'INFO',
+        # },
+
+        # linkshelf logger handles any logger defined as
+        #  logger = getLogger(__name__)
+        'linkshelf': {
+            'handlers': ['console', 'file'],
+            'level': logging.DEBUG if DEBUG else logging.INFO,
+            'propagate': False
+        },
+
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': logging.INFO,
+            'propagate': False,
+        },
+        'django.utils': {
+            'level': 'INFO',
+        },
+    },
+}

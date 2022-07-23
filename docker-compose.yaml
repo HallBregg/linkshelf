@@ -11,4 +11,5 @@ services:
       - .:/opt/app
     ports:
       - "8080:8080"
-    command: bash -c "manage.py makemigrations && manage.py migrate && manage.py runserver 0.0.0.0:8080"
+    command: bash -c "echo Making migrations && manage.py makemigrations && manage.py migrate && echo Running server
+      &&  manage.py runserver 0.0.0.0:8080"
