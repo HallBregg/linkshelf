@@ -47,9 +47,36 @@ class ListBookmarks(APIView):
             data=self.ListBookmarkSerializer(
                 many=True,
                 instance=paginator.paginate_queryset(
-                    queryset=selectors.get_all_bookmarks(filters=filters_serializer.data),
                     request=request,
-                    view=self
-                ),
+                    view=self,
+                    queryset=selectors.get_all_bookmarks(filters=filters_serializer.data))
             ).data
         )
+
+
+class ListTags(APIView):
+    class Pagination(pagination.CursorPagination):
+        page_size = 4
+        ordering = '-created_at'
+        cursor_query_param = 'c'
+
+    class ListTagSerializer(serializers.Serializer):
+        name = serializers.CharField()
+        created_at = serializers.DateTimeField()
+
+    def get(self, request):
+        paginator = self.Pagination()
+        return paginator.get_paginated_response(
+            data=self.ListTagSerializer(
+                many=True,
+                instance=paginator.paginate_queryset(
+                    request=request,
+                    view=self,
+                    queryset=selectors.get_all_tags())
+            ).data
+        )
+
+
+class AddTagToBookmarkView(APIView):
+    def put(self, bookmark_id, tag_id, request):
+        return Response({'bookmark_id': bookmark_id, 'tag_id': tag_id})

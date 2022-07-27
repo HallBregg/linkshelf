@@ -1,5 +1,7 @@
 import logging
 
+from django.db import transaction
+
 from linkshelf.apps.bookmarks.models import Bookmark, Tag
 
 
@@ -30,6 +32,7 @@ def create_tag(*, name: str) -> Tag:
     return tag
 
 
+@transaction.atomic
 def assign_tag_to_bookmark(*, bookmark_id: int, tag_name: str) -> Bookmark:
     bookmark = Bookmark.objects.get(id=bookmark_id)
     tag = Tag.objects.get(name=tag_name)
